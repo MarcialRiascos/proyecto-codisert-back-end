@@ -1,196 +1,164 @@
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `proyecto_codisert` DEFAULT CHARACTER SET utf8 ;
+USE `proyecto_codisert` ;
 
--- -----------------------------------------------------
--- Table `mydb`.`Estado`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`Estado` ;
+CREATE TABLE `administrador` (
+  `idAdministrador` int(10) UNSIGNED NOT NULL,
+  `Nombre` varchar(45) NOT NULL,
+  `Apellido` varchar(45) NOT NULL,
+  `TipoDocumento_idTipoDocumento` int(10) UNSIGNED NOT NULL,
+  `NumeroDocumento` varchar(45) NOT NULL,
+  `Telefono` varchar(45) DEFAULT NULL,
+  `Correo` varchar(45) NOT NULL,
+  `Password` varchar(45) NOT NULL,
+  `Estado_idEstado` int(10) UNSIGNED NOT NULL,
+  `Rol_idRol` int(10) UNSIGNED NOT NULL,
+  `Administrador_idAdministrador` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Estado` (
-  `idEstado` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `Estado` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idEstado`))
-ENGINE = InnoDB;
+--
+-- Volcado de datos para la tabla `administrador`
+--
 
+INSERT INTO `administrador` (`idAdministrador`, `Nombre`, `Apellido`, `TipoDocumento_idTipoDocumento`, `NumeroDocumento`, `Telefono`, `Correo`, `Password`, `Estado_idEstado`, `Rol_idRol`, `Administrador_idAdministrador`) VALUES
+(1, 'Super', 'Admin', 1, '0000000000', '1111111111', 'admin@admin.com', '1234567890', 1, 1, NULL);
 
--- -----------------------------------------------------
--- Table `mydb`.`Estrato`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`Estrato` ;
+-- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Estrato` (
-  `idEstrato` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `Estrato` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idEstrato`))
-ENGINE = InnoDB;
+--
+-- Estructura de tabla para la tabla `beneficiario`
+--
 
+CREATE TABLE `beneficiario` (
+  `idBeneficiario` int(10) UNSIGNED NOT NULL,
+  `Nombre` varchar(45) NOT NULL,
+  `Apellido` varchar(45) NOT NULL,
+  `TipoDocumento_idTipoDocumento` int(10) UNSIGNED NOT NULL,
+  `NumeroDocumento` varchar(45) NOT NULL,
+  `Telefono` varchar(45) DEFAULT NULL,
+  `Celular` varchar(45) DEFAULT NULL,
+  `Correo` varchar(45) NOT NULL,
+  `Estrato` varchar(45) NOT NULL,
+  `FechaInicio` varchar(45) NOT NULL,
+  `FechaFin` varchar(45) DEFAULT NULL,
+  `CodigoDaneDpmto` varchar(45) NOT NULL,
+  `CodigoDaneMunicipio` varchar(45) NOT NULL,
+  `Direccion` varchar(45) NOT NULL,
+  `Barrio` varchar(45) DEFAULT NULL,
+  `Estado_idEstado` int(10) UNSIGNED NOT NULL,
+  `Estrato_idEstrato` int(10) UNSIGNED NOT NULL,
+  `Administrador_idAdministrador` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- -----------------------------------------------------
--- Table `mydb`.`Rol`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`Rol` ;
+-- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Rol` (
-  `idRol` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `Rol` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idRol`))
-ENGINE = InnoDB;
+--
+-- Estructura de tabla para la tabla `dcumentos`
+--
 
+CREATE TABLE `dcumentos` (
+  `idDocumentos` int(10) UNSIGNED NOT NULL,
+  `NombreDocumento` varchar(45) NOT NULL,
+  `TipoDocumento` varchar(45) NOT NULL,
+  `Url` varchar(45) NOT NULL,
+  `Persona_idPersona` int(10) UNSIGNED NOT NULL,
+  `Administrador_idAdministrador` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- -----------------------------------------------------
--- Table `mydb`.`TipoDocumento`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`TipoDocumento` ;
+-- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `mydb`.`TipoDocumento` (
-  `idTipoDocumento` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `TipoDocumento` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idTipoDocumento`))
-ENGINE = InnoDB;
+--
+-- Estructura de tabla para la tabla `estado`
+--
 
+CREATE TABLE `estado` (
+  `idEstado` int(10) UNSIGNED NOT NULL,
+  `Estado` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- -----------------------------------------------------
--- Table `mydb`.`Administrador`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`Administrador` ;
+--
+-- Volcado de datos para la tabla `estado`
+--
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Administrador` (
-  `idAdministrador` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `Nombre` VARCHAR(45) NOT NULL,
-  `Apellido` VARCHAR(45) NOT NULL,
-  `TipoDocumento_idTipoDocumento` INT UNSIGNED NOT NULL,
-  `NumeroDocumento` VARCHAR(45) NOT NULL,
-  `Telefono` VARCHAR(45) NULL,
-  `Correo` VARCHAR(45) NOT NULL,
-  `Password` VARCHAR(45) NOT NULL,
-  `Estado_idEstado` INT UNSIGNED NOT NULL,
-  `Rol_idRol` INT UNSIGNED NOT NULL,
-  `Administrador_idAdministrador` INT NULL,
-  PRIMARY KEY (`idAdministrador`),
-  INDEX `fk_Persona_Estado1_idx` (`Estado_idEstado` ASC) VISIBLE,
-  INDEX `fk_Administrador_Rol1_idx` (`Rol_idRol` ASC) VISIBLE,
-  INDEX `fk_Administrador_TipoDocumento1_idx` (`TipoDocumento_idTipoDocumento` ASC) VISIBLE,
-  CONSTRAINT `fk_Persona_Estado10`
-    FOREIGN KEY (`Estado_idEstado`)
-    REFERENCES `mydb`.`Estado` (`idEstado`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Administrador_Rol1`
-    FOREIGN KEY (`Rol_idRol`)
-    REFERENCES `mydb`.`Rol` (`idRol`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Administrador_TipoDocumento1`
-    FOREIGN KEY (`TipoDocumento_idTipoDocumento`)
-    REFERENCES `mydb`.`TipoDocumento` (`idTipoDocumento`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+INSERT INTO `estado` (`idEstado`, `Estado`) VALUES
+(1, 'Activo'),
+(2, 'Inactivo '),
+(3, 'Operativo'),
+(4, 'Suspendido');
 
+-- --------------------------------------------------------
 
--- -----------------------------------------------------
--- Table `mydb`.`Beneficiario`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`Beneficiario` ;
+--
+-- Estructura de tabla para la tabla `estrato`
+--
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Beneficiario` (
-  `idBeneficiario` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `Nombre` VARCHAR(45) NOT NULL,
-  `Apellido` VARCHAR(45) NOT NULL,
-  `TipoDocumento_idTipoDocumento` INT UNSIGNED NOT NULL,
-  `NumeroDocumento` VARCHAR(45) NOT NULL,
-  `Telefono` VARCHAR(45) NULL,
-  `Celular` VARCHAR(45) NULL,
-  `Correo` VARCHAR(45) NOT NULL,
-  `Estrato` VARCHAR(45) NOT NULL,
-  `FechaInicio` VARCHAR(45) NOT NULL,
-  `FechaFin` VARCHAR(45) NULL,
-  `CodigoDaneDpmto` VARCHAR(45) NOT NULL,
-  `CodigoDaneMunicipio` VARCHAR(45) NOT NULL,
-  `Direccion` VARCHAR(45) NOT NULL,
-  `Barrio` VARCHAR(45) NULL,
-  `Estado_idEstado` INT UNSIGNED NOT NULL,
-  `Estrato_idEstrato` INT UNSIGNED NOT NULL,
-  `Administrador_idAdministrador` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`idBeneficiario`),
-  INDEX `fk_Persona_Estado1_idx` (`Estado_idEstado` ASC) VISIBLE,
-  INDEX `fk_Persona_Estrato1_idx` (`Estrato_idEstrato` ASC) VISIBLE,
-  INDEX `fk_Beneficiario_Administrador1_idx` (`Administrador_idAdministrador` ASC) VISIBLE,
-  INDEX `fk_Beneficiario_TipoDocumento1_idx` (`TipoDocumento_idTipoDocumento` ASC) VISIBLE,
-  CONSTRAINT `fk_Persona_Estado1`
-    FOREIGN KEY (`Estado_idEstado`)
-    REFERENCES `mydb`.`Estado` (`idEstado`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Persona_Estrato1`
-    FOREIGN KEY (`Estrato_idEstrato`)
-    REFERENCES `mydb`.`Estrato` (`idEstrato`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Beneficiario_Administrador1`
-    FOREIGN KEY (`Administrador_idAdministrador`)
-    REFERENCES `mydb`.`Administrador` (`idAdministrador`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Beneficiario_TipoDocumento1`
-    FOREIGN KEY (`TipoDocumento_idTipoDocumento`)
-    REFERENCES `mydb`.`TipoDocumento` (`idTipoDocumento`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+CREATE TABLE `estrato` (
+  `idEstrato` int(10) UNSIGNED NOT NULL,
+  `Estrato` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `estrato`
+--
 
--- -----------------------------------------------------
--- Table `mydb`.`Dcumentos`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`Dcumentos` ;
+INSERT INTO `estrato` (`idEstrato`, `Estrato`) VALUES
+(1, '1'),
+(2, '2'),
+(3, '3'),
+(4, '4'),
+(5, '5'),
+(6, '6');
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Dcumentos` (
-  `idDocumentos` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `NombreDocumento` VARCHAR(45) NOT NULL,
-  `TipoDocumento` VARCHAR(45) NOT NULL,
-  `Url` VARCHAR(45) NOT NULL,
-  `Persona_idPersona` INT UNSIGNED NOT NULL,
-  `Administrador_idAdministrador` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`idDocumentos`),
-  INDEX `fk_Detalle_Persona1_idx` (`Persona_idPersona` ASC) VISIBLE,
-  INDEX `fk_Dcumentos_Administrador1_idx` (`Administrador_idAdministrador` ASC) VISIBLE,
-  CONSTRAINT `fk_Detalle_Persona1`
-    FOREIGN KEY (`Persona_idPersona`)
-    REFERENCES `mydb`.`Beneficiario` (`idBeneficiario`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Dcumentos_Administrador1`
-    FOREIGN KEY (`Administrador_idAdministrador`)
-    REFERENCES `mydb`.`Administrador` (`idAdministrador`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+-- --------------------------------------------------------
 
+--
+-- Estructura de tabla para la tabla `historialcambios`
+--
 
--- -----------------------------------------------------
--- Table `mydb`.`HistorialCambios`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`HistorialCambios` ;
+CREATE TABLE `historialcambios` (
+  `idHistorialCambios` int(10) UNSIGNED NOT NULL,
+  `Accion` varchar(45) NOT NULL,
+  `ValorAnterior` varchar(45) NOT NULL,
+  `ValorNuevo` varchar(45) DEFAULT NULL,
+  `Administrador_idAdministrador` int(10) UNSIGNED DEFAULT NULL,
+  `Beneficiario_idBeneficiario` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`HistorialCambios` (
-  `idHistorialCambios` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `Accion` VARCHAR(45) NOT NULL,
-  `ValorAnterior` VARCHAR(45) NOT NULL,
-  `ValorNuevo` VARCHAR(45) NULL,
-  `Administrador_idAdministrador` INT UNSIGNED NULL,
-  `Beneficiario_idBeneficiario` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`idHistorialCambios`),
-  INDEX `fk_HistorialCambios_Administrador1_idx` (`Administrador_idAdministrador` ASC) VISIBLE,
-  INDEX `fk_HistorialCambios_Beneficiario1_idx` (`Beneficiario_idBeneficiario` ASC) VISIBLE,
-  CONSTRAINT `fk_HistorialCambios_Administrador1`
-    FOREIGN KEY (`Administrador_idAdministrador`)
-    REFERENCES `mydb`.`Administrador` (`idAdministrador`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_HistorialCambios_Beneficiario1`
-    FOREIGN KEY (`Beneficiario_idBeneficiario`)
-    REFERENCES `mydb`.`Beneficiario` (`idBeneficiario`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rol`
+--
+
+CREATE TABLE `rol` (
+  `idRol` int(10) UNSIGNED NOT NULL,
+  `Rol` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `rol`
+--
+
+INSERT INTO `rol` (`idRol`, `Rol`) VALUES
+(1, 'admin_super'),
+(2, 'admin_registrador'),
+(3, 'admin_lector');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipodocumento`
+--
+
+CREATE TABLE `tipodocumento` (
+  `idTipoDocumento` int(10) UNSIGNED NOT NULL,
+  `TipoDocumento` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipodocumento`
+--
+
+INSERT INTO `tipodocumento` (`idTipoDocumento`, `TipoDocumento`) VALUES
+(1, 'Cedula de ciudadanía '),
+(2, 'Cedula de ciudadanía extranjera'),
+(3, 'Pasaporte');
