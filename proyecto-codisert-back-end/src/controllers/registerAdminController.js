@@ -95,6 +95,40 @@ const registerAdminController = {
       res.status(500).json({ message: 'Error al actualizar el administrador', error: err.message });
     }
   },
+
+  async deleteAdmin(req, res) {
+    const { id } = req.params; // ID del administrador a eliminar
+
+    try {
+      // Verificar que el usuario tiene rol admin_super
+      if (req.user.role !== 'admin_super') {
+        return res.status(403).json({ message: 'No autorizado para realizar esta acción' });
+      }
+
+      // Evitar que el admin_super se elimine a sí mismo
+      if (req.user.id === parseInt(id, 10)) {
+        return res.status(400).json({ message: 'No puedes eliminar tu propia cuenta' });
+      }
+
+      // Verificar si el administrador a eliminar existe
+      const [admin] = await db.execute('SELECT * FROM administrador WHERE idAdministrador = ?', [id]);
+      if (admin.length === 0) {
+        return res.status(404).json({ message: 'Administrador no encontrado' });
+      }
+
+      // Eliminar el administrador
+      const [result] = await db.execute('DELETE FROM administrador WHERE idAdministrador = ?', [id]);
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'No se pudo eliminar el administrador, puede que no exista' });
+      }
+
+      res.status(200).json({ message: 'Administrador eliminado exitosamente' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Error al eliminar el administrador', error: err.message });
+    }
+  },
 };
 
 module.exports = registerAdminController;

@@ -21,5 +21,7 @@ router.post('/register', authMiddleware('admin_super'), UserController.registerA
 
 router.put('/admin/:id', authMiddleware('admin_super'), UserController.updateAdmin);
 
+router.delete('/manage/:id', authMiddleware('admin_super'), UserController.deleteAdmin);
+
 
 module.exports = router;
