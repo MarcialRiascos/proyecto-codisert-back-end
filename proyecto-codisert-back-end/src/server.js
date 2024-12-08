@@ -14,7 +14,8 @@ app.use(cors());
 
 // Rutas
 app.use('/auth', authRoutes);
-app.use('/protected', protectedRoutes); // Asegúrate de que las rutas protegidas están bien configuradas
+app.use('/protected', protectedRoutes); 
+
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

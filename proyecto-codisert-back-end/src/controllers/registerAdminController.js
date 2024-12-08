@@ -31,6 +31,70 @@ const registerAdminController = {
       res.status(500).json({ message: 'Error al registrar el administrador', error: err.message });
     }
   },
+
+  async updateAdmin(req, res) {
+    const { id } = req.params; // ID del administrador a modificar
+    const {
+      Nombre,
+      Apellido,
+      TipoDocumento_idTipoDocumento,
+      NumeroDocumento,
+      Telefono,
+      Correo,
+      Password,
+      Estado_idEstado,
+      Rol_idRol,
+    } = req.body;
+
+    const idAdministradorActivo = req.user.id; // ID del usuario con sesión activa
+
+    try {
+      // Verificar que el usuario tiene rol admin_super
+      if (req.user.role !== 'admin_super') {
+        return res.status(403).json({ message: 'No autorizado para realizar esta acción' });
+      }
+
+      // Encriptar la contraseña si es proporcionada
+      let hashedPassword = null;
+      if (Password) {
+        hashedPassword = await bcrypt.hash(Password, 10);
+      }
+
+      // Generar la consulta de actualización dinámica
+      const fields = [];
+      const values = [];
+      
+      if (Nombre) { fields.push('Nombre = ?'); values.push(Nombre); }
+      if (Apellido) { fields.push('Apellido = ?'); values.push(Apellido); }
+      if (TipoDocumento_idTipoDocumento) { fields.push('TipoDocumento_idTipoDocumento = ?'); values.push(TipoDocumento_idTipoDocumento); }
+      if (NumeroDocumento) { fields.push('NumeroDocumento = ?'); values.push(NumeroDocumento); }
+      if (Telefono) { fields.push('Telefono = ?'); values.push(Telefono); }
+      if (Correo) { fields.push('Correo = ?'); values.push(Correo); }
+      if (hashedPassword) { fields.push('Password = ?'); values.push(hashedPassword); }
+      if (Estado_idEstado) { fields.push('Estado_idEstado = ?'); values.push(Estado_idEstado); }
+      if (Rol_idRol) { fields.push('Rol_idRol = ?'); values.push(Rol_idRol); }
+
+      // Actualizamos el campo Administrador_idAdministrador con el ID del administrador activo
+      fields.push('Administrador_idAdministrador = ?');
+      values.push(idAdministradorActivo);
+
+      // Añadir ID del administrador que se está modificando
+      values.push(id);
+
+      // Ejecutar la consulta
+      const query = `UPDATE administrador SET ${fields.join(', ')} WHERE idAdministrador = ?`;
+      const [result] = await db.execute(query, values);
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Administrador no encontrado' });
+      }
+
+      res.status(200).json({ message: 'Administrador actualizado exitosamente' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Error al actualizar el administrador', error: err.message });
+    }
+  },
 };
 
 module.exports = registerAdminController;
