@@ -129,6 +129,39 @@ const registerAdminController = {
       res.status(500).json({ message: 'Error al eliminar el administrador', error: err.message });
     }
   },
+
+  async getAllAdmins(req, res) {
+    try {
+      // Consulta para obtener todos los administradores
+      const [admins] = await db.execute(`
+        SELECT 
+          idAdministrador, 
+          Nombre, 
+          Apellido, 
+          TipoDocumento_idTipoDocumento, 
+          NumeroDocumento, 
+          Telefono, 
+          Correo, 
+          Estado_idEstado, 
+          Rol_idRol, 
+          Administrador_idAdministrador, 
+          FechaCreacion, 
+          FechaModificacion
+        FROM administrador
+      `);
+
+      res.status(200).json({
+        message: 'Lista de administradores obtenida exitosamente',
+        admins,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        message: 'Error al obtener la lista de administradores',
+        error: err.message,
+      });
+    }
+  },
 };
 
 module.exports = registerAdminController;

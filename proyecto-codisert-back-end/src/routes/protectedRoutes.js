@@ -19,9 +19,12 @@ router.get('/lector', authMiddleware('admin_lector'), (req, res) => {
 
 router.post('/register', authMiddleware('admin_super'), UserController.registerAdmin);
 
+router.get('/admins', authMiddleware('admin_super'), UserController.getAllAdmins);
+
 router.put('/admin/:id', authMiddleware('admin_super'), UserController.updateAdmin);
 
 router.delete('/manage/:id', authMiddleware('admin_super'), UserController.deleteAdmin);
+
 
 
 module.exports = router;
