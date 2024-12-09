@@ -26,6 +26,7 @@ router.delete('/manage/:id', authMiddleware('admin_super'), UserController.delet
 router.post('/beneficiary/register', beneficiaryMiddleware(['admin_registrador', 'admin_super']), UsarController.registerBeneficiary);
 router.get('/beneficiary/all', genericMiddleware(), UsarController.getAllBeneficiaries);
 router.put('/beneficiary/:id', beneficiaryMiddleware(['admin_registrador', 'admin_super']), UsarController.updateBeneficiary);
+router.delete('/manage/beneficiary/:id', authMiddleware(), UsarController.deleteBeneficiary);
 
 
 

@@ -206,6 +206,41 @@ const beneficiaryController = {
       });
     }
   },
+
+  async deleteBeneficiary(req, res) {
+    const { id } = req.params; // ID del beneficiario a eliminar
+  
+    try {
+      // Verificar si el beneficiario existe
+      const [existingBeneficiary] = await db.execute(
+        `SELECT * FROM beneficiario WHERE idBeneficiario = ?`,
+        [id]
+      );
+  
+      if (existingBeneficiary.length === 0) {
+        return res.status(404).json({ message: 'Beneficiario no encontrado' });
+      }
+  
+      // Verificar el rol del usuario
+      if (req.user.role !== 'admin_super') {
+        return res.status(403).json({ message: 'No tienes permiso para eliminar beneficiarios' });
+      }
+  
+      // Eliminar el beneficiario
+      await db.execute(
+        `DELETE FROM beneficiario WHERE idBeneficiario = ?`,
+        [id]
+      );
+  
+      res.status(200).json({ message: 'Beneficiario eliminado exitosamente' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        message: 'Error al eliminar el beneficiario',
+        error: err.message,
+      });
+    }
+  },
 };
 
 module.exports = beneficiaryController;
