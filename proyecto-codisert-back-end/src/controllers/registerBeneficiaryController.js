@@ -115,7 +115,97 @@ const beneficiaryController = {
         error: err.message,
       });
     }
-  }
+  },
+
+  async updateBeneficiary(req, res) {
+    const {
+      Nombre,
+      Apellido,
+      TipoDocumento_idTipoDocumento,
+      NumeroDocumento,
+      Telefono,
+      Celular,
+      Correo,
+      Estrato,
+      FechaInicio,
+      FechaFin,
+      CodigoDaneDpmto,
+      CodigoDaneMunicipio,
+      Departamento,
+      Municipio,
+      Direccion,
+      Barrio,
+      Anexo,
+      Estado_idEstado,
+      Estrato_idEstrato,
+    } = req.body;
+  
+    const { id } = req.params; // ID del beneficiario a actualizar
+  
+    try {
+      // Verificar si el beneficiario existe
+      const [existingBeneficiary] = await db.execute(
+        `SELECT * FROM beneficiario WHERE idBeneficiario = ?`,
+        [id]
+      );
+  
+      if (existingBeneficiary.length === 0) {
+        return res.status(404).json({ message: 'Beneficiario no encontrado' });
+      }
+  
+      // Verificar si el NumeroDocumento ya está registrado con Estado_idEstado = 1 en otro beneficiario
+      const [conflictingBeneficiary] = await db.execute(
+        `SELECT * FROM beneficiario 
+         WHERE NumeroDocumento = ? AND Estado_idEstado = 1 AND idBeneficiario != ?`,
+        [NumeroDocumento, id]
+      );
+  
+      if (conflictingBeneficiary.length > 0) {
+        return res.status(400).json({
+          message: 'El Número de Documento ya está registrado con un beneficiario activo.',
+        });
+      }
+  
+      // Actualizar los datos del beneficiario
+      await db.execute(
+        `UPDATE beneficiario
+         SET Nombre = ?, Apellido = ?, TipoDocumento_idTipoDocumento = ?, NumeroDocumento = ?, Telefono = ?, Celular = ?, Correo = ?, Estrato = ?, 
+             FechaInicio = ?, FechaFin = ?, CodigoDaneDpmto = ?, CodigoDaneMunicipio = ?, Departamento = ?, Municipio = ?, Direccion = ?, 
+             Barrio = ?, Anexo = ?, Estado_idEstado = ?, Estrato_idEstrato = ?
+         WHERE idBeneficiario = ?`,
+        [
+          Nombre,
+          Apellido,
+          TipoDocumento_idTipoDocumento,
+          NumeroDocumento,
+          Telefono || null, // Campo opcional
+          Celular || null,  // Campo opcional
+          Correo,
+          Estrato,
+          FechaInicio,
+          FechaFin || null, // Campo opcional
+          CodigoDaneDpmto,
+          CodigoDaneMunicipio,
+          Departamento || null, // Campo opcional
+          Municipio || null,    // Campo opcional
+          Direccion,
+          Barrio || null,       // Campo opcional
+          Anexo || null,        // Campo opcional
+          Estado_idEstado,
+          Estrato_idEstrato,
+          id,
+        ]
+      );
+  
+      res.status(200).json({ message: 'Beneficiario actualizado exitosamente' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        message: 'Error al actualizar el beneficiario',
+        error: err.message,
+      });
+    }
+  },
 };
 
 module.exports = beneficiaryController;
