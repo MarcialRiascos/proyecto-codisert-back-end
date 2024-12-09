@@ -4,6 +4,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const protectedRoutes = require('./routes/protectedRoutes');
 
+
 require('dotenv').config();
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors());
 // Rutas
 app.use('/auth', authRoutes);
 app.use('/protected', protectedRoutes); 
+
 
 
 app.listen(PORT, () => {
