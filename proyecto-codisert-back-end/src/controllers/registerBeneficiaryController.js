@@ -90,6 +90,31 @@ const beneficiaryController = {
         error: err.message,
       });
     }
+  },
+
+  async getAllBeneficiaries(req, res) {
+    try {
+      // Consulta todos los beneficiarios desde la base de datos
+      const [beneficiaries] = await db.execute(
+        `SELECT 
+          idBeneficiario, Nombre, Apellido, TipoDocumento_idTipoDocumento, NumeroDocumento, Telefono, 
+          Celular, Correo, Estrato, FechaInicio, FechaFin, CodigoDaneDpmto, CodigoDaneMunicipio, Departamento, 
+          Municipio, Direccion, Barrio, Anexo, Estado_idEstado, Estrato_idEstrato, Administrador_idAdministrador 
+         FROM beneficiario`
+      );
+  
+      // Respuesta con la lista de beneficiarios
+      res.status(200).json({
+        message: 'Lista de beneficiarios obtenida exitosamente',
+        data: beneficiaries,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        message: 'Error al obtener la lista de beneficiarios',
+        error: err.message,
+      });
+    }
   }
 };
 
