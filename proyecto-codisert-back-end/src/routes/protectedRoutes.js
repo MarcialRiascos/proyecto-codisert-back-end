@@ -28,7 +28,4 @@ router.get('/beneficiary/all', genericMiddleware(), UsarController.getAllBenefic
 router.put('/beneficiary/:id', beneficiaryMiddleware(['admin_registrador', 'admin_super']), UsarController.updateBeneficiary);
 router.delete('/manage/beneficiary/:id', authMiddleware(), UsarController.deleteBeneficiary);
 
-
-
-
 module.exports = router;
