@@ -10,5 +10,6 @@ const router = express.Router();
 router.post('/upload',  authMiddleware(['admin_super', 'admin_registrador']), upload.single('document'), uploadDocument);
 router.get('/all', authMiddleware(['admin_super', 'admin_registrador']), UsarController.getAllDocuments);
 router.get('/beneficiary/:idBeneficiario', authMiddleware(['admin_super', 'admin_registrador']), UsarController.getDocumentsByBeneficiary);
+router.delete('/deldocumentbeneficiary/:idDocumentos', authMiddleware(['admin_super', 'admin_registrador']), UsarController.deleteDocument);
 
 module.exports = router;
