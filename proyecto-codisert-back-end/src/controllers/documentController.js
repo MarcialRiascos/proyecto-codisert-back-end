@@ -35,4 +35,23 @@ const uploadDocument = async (req, res) => {
   }
 };
 
-module.exports = { uploadDocument };
+
+const getAllDocuments = async (req, res) => {
+  try {
+    // Consultar todos los documentos de la base de datos
+    const [rows] = await pool.execute('SELECT * FROM documentos');
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No hay documentos registrados' });
+    }
+
+    res.status(200).json({
+      message: 'Documentos encontrados',
+      documents: rows
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al obtener los documentos', error: err.message });
+  }
+};
+
+module.exports = { uploadDocument, getAllDocuments };
