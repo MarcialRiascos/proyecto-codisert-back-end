@@ -54,4 +54,27 @@ const getAllDocuments = async (req, res) => {
   }
 };
 
-module.exports = { uploadDocument, getAllDocuments };
+const getDocumentsByBeneficiary = async (req, res) => {
+  try {
+    const { idBeneficiario } = req.params;
+
+    // Consultar los documentos relacionados con el beneficiario específico
+    const [rows] = await pool.execute(
+      'SELECT * FROM documentos WHERE Beneficiario_idBeneficiario = ?',
+      [idBeneficiario]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron documentos para este beneficiario' });
+    }
+
+    res.status(200).json({
+      message: 'Documentos encontrados',
+      documents: rows
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al obtener los documentos', error: err.message });
+  }
+};
+
+module.exports = { uploadDocument, getAllDocuments, getDocumentsByBeneficiary };

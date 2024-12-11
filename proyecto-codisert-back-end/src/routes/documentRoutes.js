@@ -9,5 +9,6 @@ const router = express.Router();
 // Ruta para cargar documentos (usamos el middleware de multer)
 router.post('/upload',  authMiddleware(['admin_super', 'admin_registrador']), upload.single('document'), uploadDocument);
 router.get('/all', authMiddleware(['admin_super', 'admin_registrador']), UsarController.getAllDocuments);
+router.get('/beneficiary/:idBeneficiario', authMiddleware(['admin_super', 'admin_registrador']), UsarController.getDocumentsByBeneficiary);
 
 module.exports = router;
